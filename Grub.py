@@ -7,29 +7,31 @@ names_list = []
 dates_list = []
 
 
-def detect_command(command):
+def detect_command(command: str) -> None:
     global status
     
     command = command.lower()
     if command == 'exit':
         status = False
-    if command == 'create':
+    elif command == 'create':
         create_data()
-    if command == 'list':
+    elif command == 'list':
         list_data()
+    elif command == 'edit':
+        edit_data()
 
 
 def create_data():
     global names_list, dates_list
     
-    print('+++++ Create Data +++++')
+    print('\n +++++ Create Data +++++')
     
     new_time = datetime.now()
     new_name = input('Enter the name \n >>> ')
     
     if new_name in names_list:
-        answer = input('The person already exist on the list. Do you want to modify? (y/n) \n >>>')
-        answer = to_boolean(answer)
+        answer = input('The person already exist on the list. Do you want to modify? (y/n) \n >>> ')
+        answer = _to_boolean(answer)
         
         if answer:
             return edit_data(new_name)
@@ -40,7 +42,7 @@ def create_data():
     dates_list.append(new_time)
 
 
-def to_boolean(value):
+def _to_boolean(value: str) -> bool:
     value = value.lower()
     
     if value == 'y' or value == '1':
@@ -53,18 +55,23 @@ def list_data():
     global names_list, dates_list
         
     for i in range(len(names_list)):
-        print(f'{i+1}> {dates_list[i]} -- {names_list[i]} ')
+        print(f'{i + 1}> {dates_list[i]} -- {names_list[i]} ')
 
 
-def edit_data():
+def edit_data(name: str = None) -> None:
     global names_list, dates_list
     
-    print('+++++ Edit Data +++++')
+    print('\n +++++ Edit Data +++++')
     
-    
-    
-    
-    pass
+    if not name:
+        name = input('What person do you whant to change? \n >>> ')
+       
+    try: 
+        position = names_list.index(name)
+        new_name = input('Give the new name \n >>> ')
+        names_list[position] = new_name
+    except:
+        print('That person doesn\'t exist')
 
 
 def delete_data():
