@@ -2,8 +2,24 @@
 from datetime import datetime
 
 
-names_list = []
-dates_list = []
+data_list = [
+    {
+        'time': datetime.now(),
+        'name': 'Nicolas',
+        'mail': 'nicolas@gmail.com',
+    },
+    {
+        'time': datetime.now(),
+        'name': 'Leonor',
+        'mail': 'leonor@gmail.com',
+    },
+    {
+        'time': datetime.now(),
+        'name': 'Rafael',
+        'mail': 'rafael@gmail.com',
+    },
+]
+
 
 
 def detect_command(command: str) -> None:
@@ -22,58 +38,87 @@ def detect_command(command: str) -> None:
         delete_data()
 
 
+
 def create_data():
-    global names_list, dates_list
+    global data_list
     
     print('\n +++++ Create Data +++++')
     
-    new_time = datetime.now()
-    new_name = input('Enter the name \n >>> ').capitalize()
+    new_data = {
+        'time': _get_cliet_field('time'),
+        'name': _get_cliet_field('name'),
+        'mail': _get_cliet_field('mail'),
+    }
     
-    if new_name in names_list:
-        answer = input('The person already exist on the list. Do you want to modify? (y/n) \n >>> ')
-        answer = _to_boolean(answer)
+    if not _verify_name_existence(new_data):
+        data_list.append(new_data)
+    else:
+        print('That name exist')
+
+
+
+def _get_cliet_field(field_name: str) -> str:
+    field = None
+    
+    if field_name == 'time':
+        return datetime.now()
+    
+    while not field:
+        field = input(f'What is the client {field_name}?')
         
-        if answer:
-            return edit_data(new_name)
-        else:
-            return None
-          
-    names_list.append(new_name)
-    dates_list.append(new_time)
+    return field
 
 
-def _to_boolean(value: str) -> bool:
-    value = value.lower()
+
+def _verify_name_existence(new_data: dict) -> bool:
+    global data_list
     
-    if value == 'y' or value == '1':
-        return True
-    elif value == 'n' or value == '0':
-        return False
+    for data in data_list: 
+        if data['name'] == new_data['name']:
+            return True
+         
+    return False
+
 
 
 def list_data():
-    global names_list, dates_list
-        
-    for i in range(len(names_list)):
-        print(f'{i + 1}. {dates_list[i]} -- {names_list[i]} ')
+    global data_list
+    
+    element = 1
+    for data in data_list:
+        print('{}> {} -- {} -- {} '.format(element, data['time'], data['name'], data['mail']))
+        element += 1
+
 
 
 def edit_data(name: str = None) -> None:
-    global names_list, dates_list
+    global data_list
     
-    print('\n +++++ Edit Data +++++')
+    print('\n+++++ Edit Data +++++')
     
     if not name:
         name = input('What person do you whant to change? \n >>> ').capitalize()
-       
-    try: 
-        position = names_list.index(name)
-        new_name = input('Give the new name \n >>> ')
-        names_list[position] = new_name
-        print(f'---- {name.upper()} is now {new_name.upper()} ----')
-    except:
-        print(f'-!- {name.upper()} doesn\'t exist -!-')
+    
+    position = None
+    for i in range(len(data_list)):
+        if data_list[i]['name'] == name:
+            position = i
+
+    if not position and position != 0:
+        return print('That person dosn\'t exist')
+    else:
+        to_edit = input('What value do you want to change?')
+        
+    key_state = False
+    for keys in data_list[position].keys():
+        if keys == to_edit:
+            key_state = True
+    
+    if key_state:
+        data_list[position][to_edit] = _get_cliet_field(to_edit)
+    else:
+        print(f'{to_edit} is not a correct key')
+
 
 
 def delete_data():
@@ -92,6 +137,7 @@ def delete_data():
         print(f'-!- {name.upper()} doesn\'t exist -!-')
 
 
+
 def start_program():    
     print(
         '''
@@ -108,6 +154,7 @@ def start_program():
         '''
     )
         
+
 
 if __name__ == '__main__':
     
