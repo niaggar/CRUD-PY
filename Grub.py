@@ -1,6 +1,5 @@
 
-from datetime import date, datetime
-from typing import Text
+from datetime import datetime
 
 
 names_list = []
@@ -19,6 +18,8 @@ def detect_command(command: str) -> None:
         list_data()
     elif command == 'edit':
         edit_data()
+    elif command == 'delete':
+        delete_data()
 
 
 def create_data():
@@ -27,7 +28,7 @@ def create_data():
     print('\n +++++ Create Data +++++')
     
     new_time = datetime.now()
-    new_name = input('Enter the name \n >>> ')
+    new_name = input('Enter the name \n >>> ').capitalize()
     
     if new_name in names_list:
         answer = input('The person already exist on the list. Do you want to modify? (y/n) \n >>> ')
@@ -55,7 +56,7 @@ def list_data():
     global names_list, dates_list
         
     for i in range(len(names_list)):
-        print(f'{i + 1}> {dates_list[i]} -- {names_list[i]} ')
+        print(f'{i + 1}. {dates_list[i]} -- {names_list[i]} ')
 
 
 def edit_data(name: str = None) -> None:
@@ -64,18 +65,31 @@ def edit_data(name: str = None) -> None:
     print('\n +++++ Edit Data +++++')
     
     if not name:
-        name = input('What person do you whant to change? \n >>> ')
+        name = input('What person do you whant to change? \n >>> ').capitalize()
        
     try: 
         position = names_list.index(name)
         new_name = input('Give the new name \n >>> ')
         names_list[position] = new_name
+        print(f'---- {name.upper()} is now {new_name.upper()} ----')
     except:
-        print('That person doesn\'t exist')
+        print(f'-!- {name.upper()} doesn\'t exist -!-')
 
 
 def delete_data():
-    pass
+    global names_list, dates_list
+    
+    print('\n +++++ Delete Data +++++')
+    
+    name = input('What person do you whant to delete? \n >>> ').capitalize()
+    
+    if name in names_list:
+        position = names_list.index(name)
+        names_list.pop(position)
+        dates_list.pop(position)
+        print(f'---- {name.upper()} was eliminated ----')
+    else:
+        print(f'-!- {name.upper()} doesn\'t exist -!-')
 
 
 def start_program():    
@@ -93,14 +107,14 @@ def start_program():
         ---------------------------------
         '''
     )
-    return input('>>> ')
-    
+        
 
 if __name__ == '__main__':
     
     status = True
+    start_program()
     while status == True:
-        start_comand = start_program()
+        start_comand = input('\n \n>>> ')
         detect_command(start_comand)
     
     
